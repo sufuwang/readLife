@@ -1,0 +1,21 @@
+.filter {
+  display: flex;
+  flex-direction: column;
+  height: calc(100vh - 48px);
+
+  >.form {
+    .item {
+      width: fit-content;
+      min-width: 260px;
+    }
+  }
+  >.list {
+    flex: 1;
+    overflow-y: auto;
+    .item {
+      .title {
+        cursor: pointer;
+      }
+    }
+  }
+}

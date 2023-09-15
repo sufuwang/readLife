@@ -1,0 +1,20 @@
+.container {
+  .content {
+    display: flex;
+
+    >:nth-child(1) {
+      width: 50%;
+      min-width: 50%;
+    }
+
+    >:nth-child(2) {
+      margin-left: 12px;
+      margin-right: 12px;
+      height: calc(100vh - 48px);
+    }
+
+    >:nth-child(3) {
+      flex: 1;
+    }
+  }
+}
