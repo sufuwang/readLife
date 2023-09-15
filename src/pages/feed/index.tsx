@@ -5,7 +5,7 @@ import {
 	BgColorsOutlined,
 	HomeOutlined,
 } from "@ant-design/icons";
-import Menu from "@component/feedMenu";
+import FeedMenu from "@component/feedMenu";
 import styles from "./index.module.scss";
 import { useState } from "react";
 import useFeed from "@hook/useFeed";
@@ -43,7 +43,7 @@ const Feed = () => {
 					<FloatButton.BackTop />
 				</FloatButton.Group>
 			</div>
-			<Menu isShow={isShowMenu} onClose={onCloseMenu} />
+			<FeedMenu isShow={isShowMenu} onClose={onCloseMenu} />
 		</Context.Provider>
 	);
 };

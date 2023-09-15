@@ -1,20 +1,35 @@
 .container {
+  :global(.ant-drawer-body) {
+    padding: 16px;
+  }
   .content {
     display: flex;
-
-    >:nth-child(1) {
-      width: 50%;
-      min-width: 50%;
+    flex-direction: column;
+    >.segmented {
+      width: fit-content;
+      height: fit-content;
+      margin-bottom: 6px;
     }
-
-    >:nth-child(2) {
-      margin-left: 12px;
-      margin-right: 12px;
-      height: calc(100vh - 48px);
-    }
-
-    >:nth-child(3) {
-      flex: 1;
+    >.app >div {
+      height: calc(100vh - 74px);
+      overflow: hidden;
+      padding: 12px;
+      display: flex;
+      flex-direction: row;
+      >:nth-child(1) {
+        width: 30%;
+        min-width: 50%;
+      }
+  
+      >:nth-child(2) {
+        height: 100%;
+        margin-left: 12px;
+        margin-right: 12px;
+      }
+  
+      >:nth-child(3) {
+        flex: 1;
+      }
     }
   }
 }

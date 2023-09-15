@@ -1,0 +1,11 @@
+{
+  "title": "标题",
+  "tag": "标签",
+  "desc": "内容",
+  "image_list": "图片集",
+  "title_of_upload": "点击这里或者将图片拖拽至此处",
+  "desc_of_upload": "尽可能的上传高清图片，我将使尽浑身解数来展示这些图片",
+  "please_enter_name_of_image": "请为这些图片起一个闪烁的名字",
+  "please_select_tags_of_image": "请为这些图片打上标签，方便你以后寻找他喔",
+  "please_enter_desc_of_image": "请毫无保留地讲述这些图片背后的故事，它一定和你一样精彩"
+}
