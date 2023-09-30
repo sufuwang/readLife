@@ -23,7 +23,9 @@
     "paths": {
       "@hook/*": ["./src/hooks/*"],
       "@component/*": ["./src/components/*"],
-      "@page/*": ["./src/pages/*"]
+      "@page/*": ["./src/pages/*"],
+      "@api/*": ["./src/apis/*"],
+      "@tool/*": ["./src/tools/*"]
     }
   },
   "include": ["src"],

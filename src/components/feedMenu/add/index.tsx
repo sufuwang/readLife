@@ -1,18 +1,19 @@
 import { Button, Form, Input, Select, Upload, message } from "antd";
-import type { SelectProps } from "antd";
+import type { SelectProps, UploadFile } from "antd";
 import useI18n from "@hook/useI18n";
 import _i18n_ from "./i18n.json";
 import { InboxOutlined } from "@ant-design/icons";
-import type { UploadProps } from "antd";
-
-const onFinish = (values: unknown) => {
-	console.log("Success:", values);
-};
+import { useEffect, useState } from "react";
+import { uploadImage } from "@api/resource";
+import { createFeed, getAllTags } from "@api/feed";
 
 interface FieldType {
 	title: string;
-	tag: string;
-	desc: string;
+	tags: string[];
+	content: string;
+	images: {
+		fileList: UploadFile[];
+	};
 }
 
 const options: SelectProps["options"] = [];
@@ -23,35 +24,40 @@ for (let i = 10; i < 36; i++) {
 	});
 }
 
-const props: UploadProps = {
-	name: "file",
-	multiple: true,
-	listType: "picture-card",
-	onChange(info) {
-		const { status } = info.file;
-		if (status !== "uploading") {
-			console.log(info.file, info.fileList);
-		}
-		if (status === "done") {
-			message.success(`${info.file.name} file uploaded successfully.`);
-		} else if (status === "error") {
-			message.error(`${info.file.name} file upload failed.`);
-		}
-	},
-	onDrop(e) {
-		console.log("Dropped files", e.dataTransfer.files);
-	},
-};
-
 const App: React.FC = () => {
 	const i18n = useI18n(_i18n_);
+	const [form] = Form.useForm();
+	const [tags, setTags] = useState<Record<"label" | "value", string>[]>([]);
+
+	useEffect(() => {
+		getAllTags().then((tags) =>
+			setTags(tags.map((tag) => ({ value: tag, label: tag })))
+		);
+	}, []);
+
+	const onFinish = async (data: FieldType) => {
+		const is = data.images.fileList.map(uploadImage);
+		const paths: string[] = [];
+		for (const res of is) {
+			paths.push((await (await res).json()).path);
+		}
+		await createFeed({
+			title: data.title,
+			tags: data.tags,
+			images: paths,
+			content: data.content,
+		});
+		form.resetFields();
+		message.success(i18n.submit_success);
+	};
 
 	return (
 		<>
 			<Form
 				name="basic"
+				form={form}
 				labelCol={{ span: 2 }}
-				wrapperCol={{ span: 16 }}
+				wrapperCol={{ span: 24 }}
 				onFinish={onFinish}
 			>
 				<Form.Item<FieldType>
@@ -62,21 +68,17 @@ const App: React.FC = () => {
 					<Input placeholder={i18n.please_enter_name_of_image} />
 				</Form.Item>
 
-				<Form.Item<FieldType>
-					label={i18n.tag}
-					name="tag"
-					rules={[{ message: "" }]}
-				>
+				<Form.Item<FieldType> label={i18n.tag} name="tags">
 					<Select
 						mode="tags"
 						placeholder={i18n.please_select_tags_of_image}
-						options={options}
+						options={tags}
 					/>
 				</Form.Item>
 
 				<Form.Item<FieldType>
 					label={i18n.desc}
-					name="desc"
+					name="content"
 					rules={[{ message: "" }]}
 				>
 					<Input.TextArea
@@ -85,8 +87,17 @@ const App: React.FC = () => {
 					/>
 				</Form.Item>
 
-				<Form.Item name="images" wrapperCol={{ offset: 2, span: 16 }}>
-					<Upload.Dragger {...props}>
+				<Form.Item<FieldType>
+					name="images"
+					wrapperCol={{ offset: 2, span: 24 }}
+				>
+					<Upload.Dragger
+						name="file"
+						multiple
+						action="http://localhost:3000/resource/upload"
+						listType="picture-card"
+						beforeUpload={() => false}
+					>
 						<p className="ant-upload-drag-icon">
 							<InboxOutlined />
 						</p>

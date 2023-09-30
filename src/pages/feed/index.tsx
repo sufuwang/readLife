@@ -1,4 +1,4 @@
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { FloatButton, ColorPicker } from "antd";
 import {
 	MenuFoldOutlined,
@@ -7,24 +7,41 @@ import {
 } from "@ant-design/icons";
 import FeedMenu from "@component/feedMenu";
 import styles from "./index.module.scss";
-import { useState } from "react";
-import useFeed from "@hook/useFeed";
+import { useEffect, useState } from "react";
+import useFeedContext from "@hook/useFeedContext";
 import useColor from "@hook/useColor";
+import { getFeed } from "@api/feed";
 
 const Feed = () => {
+	const { search } = useLocation();
 	const navigate = useNavigate();
-	const [isShowMenu, setIsShowMenu] = useState(true);
-	const { Context, Value } = useFeed({ setIsShowMenu });
+	const [isShowMenu, setIsShowMenu] = useState(false);
+	const { Context, Value } = useFeedContext({ setIsShowMenu });
 	const { color, setColor } = useColor();
 
-	const renderImageList = () => {
-		return (Value.detail?.images ?? []).map((src, index) => (
-			<img key={index} src={src} />
-		));
-	};
+	useEffect(() => {
+		const id = new URLSearchParams(search).get("id");
+		if (!id) {
+			setIsShowMenu(true);
+			return;
+		}
+		getFeed(+id).then((feed) => {
+			if (feed.title) {
+				Value.setFeed(feed);
+			} else {
+				setIsShowMenu(true);
+			}
+		});
+	}, []);
 
 	const onCloseMenu = () => {
+		window.scrollTo(0, 0);
 		setIsShowMenu(false);
+	};
+	const renderImageList = () => {
+		return (Value.feed?.images ?? []).map((src, index) => (
+			<img key={index} src={`http://localhost:3000/public/${src}`} />
+		));
 	};
 
 	return (
